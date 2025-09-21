@@ -1,1 +1,3 @@
-# ex3
+
+![Exercise 03](./ex03.png)
+
