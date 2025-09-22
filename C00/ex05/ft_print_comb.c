@@ -1,32 +1,36 @@
 #include <unistd.h>
 
-void ft_putchar(char c){
-	write(1, &c, 1);
+static void ft_putchar(char character){
+	write(1, &character, 1);
 }
 
-void ft_print_comb(void){
-
-	int digi1 = '0';
-	while (digi1 <= '7'){
-		int digi2 = digi1 + 1;
-		while (digi2 <= '8'){
-			int digi3 = digi2 + 1;
-			while (digi3 <= '9'){
-				ft_putchar(digi1);
-				ft_putchar(digi2);
-				ft_putchar(digi3);
-				
-				if (digi1 != '7' || digi2 != '8' || digi3 != '9'){
-					ft_putchar(',');
-					ft_putchar(' ');
-				}
-
-				digi3++;
-			}
-			digi2++;
-		}
-		digi1++;
+static void print_combination(char first_digit, char second_digit, char third_digit){
+	ft_putchar(first_digit);
+	ft_putchar(second_digit);
+	ft_putchar(third_digit);
+	if (!(first_digit == 7 && second_digit == 8 && third_digit == 9)){
+		write(1, ", ", 2);
 	}
+}
+
+static void ft_print_comb(void){
+
+	int first_digit = '0';
+	while (first_digit <= '7'){
+
+		int second_digit = first_digit + 1;
+		while (second_digit <= '8'){
+
+			int third_digit = second_digit + 1;
+			while (third_digit <= '9'){
+
+				print_combination(first_digit, second_digit, third_digit);
+				third_digit++;
+				}
+			second_digit++;
+			}
+		first_digit++;
+		}
 }
 
 int main(){
