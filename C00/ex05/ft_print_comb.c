@@ -8,12 +8,12 @@ static void print_combination(char first_digit, char second_digit, char third_di
 	ft_putchar(first_digit);
 	ft_putchar(second_digit);
 	ft_putchar(third_digit);
-	if (!(first_digit == 7 && second_digit == 8 && third_digit == 9)){
+	if (!(first_digit == '7' && second_digit == '8' && third_digit == '9')){
 		write(1, ", ", 2);
 	}
 }
 
-static void ft_print_comb(void){
+void ft_print_comb(void){
 
 	int first_digit = '0';
 	while (first_digit <= '7'){
@@ -23,8 +23,8 @@ static void ft_print_comb(void){
 
 			int third_digit = second_digit + 1;
 			while (third_digit <= '9'){
-
 				print_combination(first_digit, second_digit, third_digit);
+
 				third_digit++;
 				}
 			second_digit++;
