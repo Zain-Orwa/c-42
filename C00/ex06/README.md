@@ -1,1 +1,2 @@
-# ex6
+
+![Exercise 06](ex06.png)
