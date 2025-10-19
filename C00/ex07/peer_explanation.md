@@ -102,8 +102,6 @@ int main(void){
 | `ft_putchar((num % 10) + '0');` | Prints the last digit                               |
 | `main()`                        | Used only for testing, not submitted to the grader  |
 
----
-
 ## 🧪 Expected Output
 
 ```bash
