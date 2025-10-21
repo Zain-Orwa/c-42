@@ -4,7 +4,7 @@ void ft_putchar(char c){
     write(1, &c, 1);
 }
 
-void print_combination(short a, short b){
+void print_combination(int a, int b){
     ft_putchar(a / 10 + '0');
     ft_putchar(a % 10 + '0');
     ft_putchar(' ');
@@ -18,8 +18,8 @@ void print_combination(short a, short b){
 }
 
 void ft_print_comb2(void){
-    short a;
-    short b;
+    int   a;
+    int   b;
     
     a = 0;
     while (a <= 99){
