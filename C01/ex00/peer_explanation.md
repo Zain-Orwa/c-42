@@ -16,16 +16,37 @@ None
 
 ## 🧠 Objective
 
-Create a function that takes a **pointer to an integer** and sets the value of that integer to **42**.
+Create a function that takes a **pointer to an integer** and assigns the value **42** to the integer that the pointer references.
 
 ---
 
 ## 📘 Final Code
 
 ```c
+#include <unistd.h>
+#include <stdio.h>
+
 void ft_ft(int *nbr)
 {
 	*nbr = 42;
+}
+
+int main(void)
+{
+	int n = 5;
+	int *nbr = &n;
+
+	printf("Before ft_ft:\n");
+	printf("Variable 'n' is stored at address %p and holds the value %d\n", &n, n);
+	printf("Pointer 'nbr' points to the same address %p and dereferencing it gives the value %d\n", nbr, *nbr);
+
+	ft_ft(nbr);
+
+	printf("\nAfter ft_ft:\n");
+	printf("Pointer 'nbr' still points to address %p, but now that memory holds the value %d\n", nbr, *nbr);
+	printf("The variable 'n' now has the new value %d stored.\n", n);
+
+	return (0);
 }
 ```
 
@@ -33,125 +54,156 @@ void ft_ft(int *nbr)
 
 ## 🔍 Explanation
 
-| Concept      | Description                                                                            |
-| ------------ | -------------------------------------------------------------------------------------- |
-| `int *nbr`   | A **pointer** that holds the memory address of an integer variable                     |
-| `*nbr`       | The **dereferenced value** of that pointer — the actual integer stored at that address |
-| `*nbr = 42;` | Changes the value stored in that memory address to 42                                  |
+Let’s break down this simple pointer manipulation step by step — this is your **first real pointer exercise** in C.
 
 ---
 
-## 🧩 Example to Visualize
+### 🧩 Step 1: Understanding the function prototype
 
 ```c
-int main(void)
-{
-	int n;
-	int *ptr;
-
-	n = 5;          // initial value
-	ptr = &n;       // ptr now points to n’s address
-	ft_ft(ptr);     // changes n’s value to 42
-
-	// now n == 42
-}
+void ft_ft(int *nbr);
 ```
 
-### 💡 Memory Representation
+The parameter `int *nbr` means the function **receives a pointer** to an integer.
+That pointer stores the **memory address** of an integer variable defined elsewhere (in this case, `n` inside `main`).
 
-| Variable | Value        | Memory Address | Points To |
-| -------- | ------------ | -------------- | --------- |
-| `n`      | 42           | `0x7ffee...`   | —         |
-| `ptr`    | `0x7ffee...` | `0x7ffee...`   | `n`       |
-
----
-
-## 🧠 Step-by-Step Logic
-
-| Step | What Happens                                                                          |
-| ---- | ------------------------------------------------------------------------------------- |
-| 1️⃣  | `main()` defines an integer `n` and initializes it.                                   |
-| 2️⃣  | `ptr = &n;` → `ptr` now holds the address of `n`.                                     |
-| 3️⃣  | Function `ft_ft(ptr)` is called.                                                      |
-| 4️⃣  | Inside `ft_ft`, the pointer `nbr` receives the same address as `ptr`.                 |
-| 5️⃣  | `*nbr = 42;` modifies the content stored at that address — i.e., changes `n` to `42`. |
+> 💬 **Question:** Why do we use a pointer instead of a normal variable?
+> Because if we passed the integer directly, the function would get a **copy** of the value — changing it wouldn’t affect the original.
+> A pointer gives the function **direct access** to the original memory location, allowing us to modify the value stored there.
 
 ---
 
-## 🧩 Why It’s Called `ft_ft`
+### 🧩 Step 2: What does `*nbr = 42;` do?
 
-Because you’re **"setting a value" through a pointer** — it’s the first step into understanding how to manipulate variables indirectly through memory.
-
----
-
-## 🧠 Key Concept: Dereferencing
-
-👉 **Dereferencing** means:
-
-> Accessing or modifying the actual data located at a memory address stored in a pointer.
-
-So when you write:
+The `*` operator **dereferences** the pointer — it accesses the actual value stored at the memory address that `nbr` is pointing to.
+So:
 
 ```c
 *nbr = 42;
 ```
 
-It doesn’t assign 42 to the pointer itself, but rather to the **integer it points to**.
+means:
+➡️ “Go to the address stored inside `nbr`, and replace whatever value is there with 42.”
+
+> 💬 **Question:** What is the difference between `nbr` and `*nbr`?
+>
+> * `nbr` → holds the **address** of `n`.
+> * `*nbr` → accesses the **value** stored at that address.
+>   Setting `*nbr = 42` modifies `n` itself.
 
 ---
 
-## 💬 Common Mistakes
+### 🧩 Step 3: The `main()` function
 
-| Mistake                                          | Why It’s Wrong                                                          |
-| ------------------------------------------------ | ----------------------------------------------------------------------- |
-| Writing `nbr = 42;`                              | ❌ Changes the pointer’s address, not the value it points to             |
-| Forgetting `*` before `nbr`                      | ❌ You’d only reassign where the pointer points, not the actual variable |
-| Declaring without pointer: `void ft_ft(int nbr)` | ❌ Would only modify a copy, not the original variable in memory         |
+In your test code:
 
----
+```c
+int n = 5;
+int *nbr = &n;
+```
 
-## 🧩 Summary
+* `n` is a normal integer variable that holds the value `5`.
+* `nbr = &n` assigns to `nbr` the **address of `n`**.
+  So `nbr` now points to the memory location of `n`.
 
-| Concept           | Description                                                |
-| ----------------- | ---------------------------------------------------------- |
-| **Pointer**       | A variable that stores the **address** of another variable |
-| **Dereferencing** | Accessing the **value** stored at that address             |
-| **Goal**          | Change a variable indirectly via its pointer               |
-| **Result**        | The variable becomes 42                                    |
-
-✅ **Output after `ft_ft`:**
-`n` now holds the value **42**.
+> 💬 **Question:** What does `&n` mean?
+> The `&` operator gives you the **memory address** of `n`.
+> That’s what makes the connection between `n` and the pointer `nbr`.
 
 ---
 
-## 🧩 Peer Evaluation Q&A
+### 🧩 Step 4: Before calling `ft_ft()`
 
-### 🧠 Q1: What does the function do?
+When you print:
 
-**A:** It sets the integer pointed to by `nbr` to 42.
+```c
+printf("Variable 'n' is stored at address %p and holds the value %d\n", &n, n);
+printf("Pointer 'nbr' points to the same address %p and dereferencing it gives the value %d\n", nbr, *nbr);
+```
 
----
+You’ll see that both `&n` and `nbr` print the **same address** (because `nbr` points to `n`),
+and both `n` and `*nbr` show the same **value** — `5`.
 
-### 🧠 Q2: Why do we pass a pointer?
+That means:
 
-**A:** So the function can modify the **original variable** in memory, not just a copy.
-
----
-
-### 🧠 Q3: What’s the difference between `nbr` and `*nbr`?
-
-**A:** `nbr` stores the memory address, while `*nbr` accesses the value stored there.
-
----
-
-### 🧠 Q4: What happens if we remove the `*`?
-
-**A:** The code would assign 42 to the pointer variable itself (invalid), not to the integer it points to.
+* `&n == nbr`
+* `n == *nbr`
 
 ---
 
-### 🧠 Q5: Why is 42 used here?
+### 🧩 Step 5: After calling `ft_ft(nbr);`
 
-**A:** It’s a symbolic number in programming culture — from *The Hitchhiker’s Guide to the Galaxy* — representing “the answer to everything.”
+Inside the function:
 
+```c
+*nbr = 42;
+```
+
+changes the content of the memory address where `n` lives.
+
+When you return to `main()`, that same memory address now stores `42`.
+
+So, printing again:
+
+```c
+printf("Pointer 'nbr' still points to address %p, but now that memory holds the value %d\n", nbr, *nbr);
+printf("The variable 'n' now has the new value %d stored.\n", n);
+```
+
+will output something like:
+
+```
+After ft_ft:
+Pointer 'nbr' still points to address 0x7ffee7c8d9bc, but now that memory holds the value 42
+The variable 'n' now has the new value 42 stored.
+```
+
+> 💬 **Question:** Did the pointer change after the function call?
+> No — the pointer still points to the **same address**.
+> Only the **value stored at that address** was modified.
+
+---
+
+### 🧩 Step 6: Memory Visualization
+
+| Variable | Value        | Address      | Points To |
+| -------- | ------------ | ------------ | --------- |
+| `n`      | 42           | `0x7ffee...` | —         |
+| `nbr`    | `0x7ffee...` | `0x7ffee...` | `n`       |
+
+> 💬 **Question:** What happens if we remove the `*` in the assignment?
+> If you wrote `nbr = 42;`, you’d try to assign an integer to a pointer —
+> ❌ invalid logic — it would break the connection between the pointer and the variable `n`.
+> The correct operation is always `*nbr = value;` when modifying the pointed variable.
+
+---
+
+### 🧩 Step 7: Why 42?
+
+The number `42` is a symbolic tradition in programming — it comes from *The Hitchhiker’s Guide to the Galaxy*, where **42 is “the answer to life, the universe, and everything.”**
+In the 42 curriculum, it’s used as a simple test value to confirm correct pointer behavior.
+
+---
+
+### 🧩 Step 8: Summary
+
+| Concept                 | Description                                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| **Pointer**             | A variable that stores the memory address of another variable  |
+| **Dereferencing (`*`)** | Accesses the value stored at the address the pointer refers to |
+| **Address-of (`&`)**    | Returns the memory address of a variable                       |
+| **Goal of `ft_ft()`**   | Modify an integer indirectly using its pointer                 |
+| **Result**              | The original variable is changed from 5 → 42                   |
+
+✅ **Final Output Example:**
+
+```
+Before ft_ft:
+Variable 'n' is stored at address 0x7ffee7c8d9bc and holds the value 5
+Pointer 'nbr' points to the same address 0x7ffee7c8d9bc and dereferencing it gives the value 5
+
+After ft_ft:
+Pointer 'nbr' still points to address 0x7ffee7c8d9bc, but now that memory holds the value 42
+The variable 'n' now has the new value 42 stored.
+```
 
