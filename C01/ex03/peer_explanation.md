@@ -45,10 +45,8 @@ int main(void)
 {
 	int a = 45;
 	int b = 5;
-	int v1 = 0;
-	int v2 = 0;
-	int *div = &v1;
-	int *mod = &v2;
+	int *div = &a;
+	int *mod = &b;
 
 	printf("Before ft_div_mod:\n");
 	printf("Pointer 'div' points to address %p that has the value %d stored\n", div, *div);
