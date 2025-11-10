@@ -6,7 +6,7 @@ void ft_ultimate_ft(int *********nbr){
 
 int main(void)
 {
-	int number = 1024;
+	int number;
 	int *ptr1 = &number;
 	int **ptr2 = &ptr1;
 	int ***ptr3 = &ptr2;
