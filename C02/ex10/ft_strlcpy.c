@@ -31,9 +31,9 @@ unsigned int ft_strlcpy(char *dest, char *src, unsigned int size){
 }
 
 int main(){
-	char src[] = "letters";
+	char src[] = "Hello";
 	char dest[11];
-	int n = 6;
+	int n = 3;
 
 	printf("src: %s\nlength returned: %d\ndest: %s\n", src, ft_strlcpy(dest, src, n), dest);
 
