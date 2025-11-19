@@ -443,4 +443,76 @@ You can present it in **layers**:
    * In the official subject, you’d add a loop to move the address by +16 each line.
      (You don’t need to change your code now; just mention the idea.)
 
+---
+
+# ❓ **Q&A: Why does the code check `size == 1` instead of `size == 0`?**
+
+### **Q: The subject says → “If `size == 0`, nothing should be displayed.”
+
+So why does the program check:**
+
+```c
+if (size == 1)
+    return (addr);
+```
+
+### **A: Because an empty string in C always has size 1, not 0.**
+
+When you write:
+
+```c
+char empty[] = "";
+```
+
+In memory, this array still contains **one byte** — the null terminator:
+
+```
+[ '\0' ]
+```
+
+Therefore:
+
+| Expression      | Result                        |
+| --------------- | ----------------------------- |
+| `strlen(empty)` | **0** (no visible characters) |
+| `sizeof(empty)` | **1** (because of the `'\0'`) |
+
+`ft_print_memory` receives the **array size**, not the string length.
+
+So when you call:
+
+```c
+ft_print_memory(empty, sizeof(empty));
+```
+
+You are actually calling:
+
+```c
+ft_print_memory(empty, 1);
+```
+
+### ✔️ But the subject wants **empty string = print nothing**
+
+Even though C gives it **size = 1**.
+
+So the correct way to detect the “empty string” case is:
+
+```c
+if (size == 1)
+    return (addr);
+```
+
+This prevents printing one line that contains the single byte `00` from the null character.
+
+---
+
+# 🧠 **Final Short Explanation to Include in Notes**
+
+> In C, an empty string `""` has size **1** because of the null terminator (`'\0'`).
+> The subject requires that “if size == 0, nothing should be displayed,” but in practice, this case never naturally happens when passing string arrays.
+> To match the expected behavior (do not print anything for `""`), we check for `size == 1`, which represents an empty string in memory.
+
+---
+
+
 
