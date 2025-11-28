@@ -419,3 +419,229 @@ long_nbr = -long_nbr;   // safe
 
 ---
 
+***Section2***
+
+1. **Comparison with `ft_putnbr` and `itoa`**
+2. **Common mistakes and how to fix them**
+
+They follow the same formatting style as the rest of the peer_explanation you already have.
+
+---
+
+# ✅ **1.Comparison with `ft_putnbr` and `itoa`**
+
+## 🔍 **Comparison with `ft_putnbr`**
+
+`ft_putnbr(int nb)` prints an integer **only in decimal (base 10)** using the digits `'0'` to `'9'`.
+
+| Feature                     | `ft_putnbr` | `ft_putnbr_base`                     |
+| --------------------------- | ----------- | ------------------------------------ |
+| Base                        | Always 10   | Any base (length 2–∞)                |
+| Digit symbols               | `'0'`–`'9'` | Defined by the user via `char *base` |
+| Negative handling           | Yes         | Yes                                  |
+| Recursion                   | Yes         | Yes                                  |
+| Output method               | `write()`   | `write()`                            |
+| Flexibility                 | ❌ Limited   | ✔ Very flexible                      |
+| Can print hex, binary, etc. | ❌ No        | ✔ Yes                                |
+
+### Summary:
+
+**`ft_putnbr_base` is a general version of `ft_putnbr`.**
+If you pass `"0123456789"` as the base, `ft_putnbr_base` behaves almost exactly like `ft_putnbr`.
+
+---
+
+## 🔍 **Comparison with `itoa`**
+
+`itoa()` is a non-standard function (not in the C standard library).
+It converts an integer into a **string** (null-terminated), but:
+
+* It only supports bases up to 36.
+* Digits above 9 must be represented with `'A'`–`'Z'` or `'a'`–`'z'`.
+* It does **not** print; it returns a `char *`.
+
+### Example prototype (varies by system):
+
+```c
+char *itoa(int value, char *str, int base);
+```
+
+### Key differences:
+
+| Feature                   | `itoa`               | `ft_putnbr_base`                              |
+| ------------------------- | -------------------- | --------------------------------------------- |
+| Output                    | Returns a string     | Prints characters to stdout                   |
+| Maximum base              | 36                   | Unlimited (as long as `base` string is valid) |
+| Digit set                 | Fixed (`0–9`, `A–Z`) | Custom per user string                        |
+| Base type                 | integer              | string                                        |
+| Standard?                 | ❌ No                 | Not standard either, but 42 requires it       |
+| Handling of invalid bases | Behavior varies      | Strict validation (length, duplicates, +, -)  |
+
+### Summary:
+
+**`ft_putnbr_base` is more flexible than `itoa`** because you can use *any* character set to represent digits. But it **does not return a string**—it only prints.
+
+---
+
+# ✅ **2.Common Mistakes and How to Fix Them**
+
+
+---
+
+## ❌ **Mistake 1 — Not validating the base**
+
+```c
+ft_putnbr_base(42, "");
+ft_putnbr_base(42, "0");
+ft_putnbr_base(42, "112");
+ft_putnbr_base(42, "01+");
+```
+
+**Symptoms:**
+
+* Wrong output
+* Infinite recursion
+* Crashes
+
+**Fix:**
+Always check:
+
+```c
+if (!validate_base(base))
+    return;
+```
+
+---
+
+## ❌ **Mistake 2 — Using `int` instead of `long`**
+
+If you do:
+
+```c
+int n = nbr;
+if (n < 0)
+    n = -n;  // ❌ INT_MIN overflow
+```
+
+This causes **undefined behavior** for `-2147483648`.
+
+**Fix:**
+Use long:
+
+```c
+long long_nbr = (long)nbr;
+if (long_nbr < 0)
+    long_nbr = -long_nbr;
+```
+
+---
+
+## ❌ **Mistake 3 — Printing digits in reverse order**
+
+Beginners often do:
+
+```c
+ft_putchar(base[n % base_len]);
+ft_putnbr_base(n / base_len, base);
+```
+
+This prints least significant digits first → **wrong order**.
+
+**Correct order:**
+
+```c
+if (long_nbr >= base_len)
+    ft_putnbr_base(long_nbr / base_len, base);
+
+ft_putchar(base[long_nbr % base_len]);
+```
+
+---
+
+## ❌ **Mistake 4 — Forgetting to print `-` for negative numbers**
+
+**Fix:**
+
+```c
+if (long_nbr < 0)
+{
+    ft_putchar('-');
+    long_nbr = -long_nbr;
+}
+```
+
+---
+
+## ❌ **Mistake 5 — Using the base length before validating the base**
+
+If you do:
+
+```c
+int base_len = ft_strlen(base);
+if (!validate_base(base))
+    return;
+```
+
+You compute base_len for invalid bases (not harmful but wrong order).
+
+**Cleaner version:**
+
+```c
+if (!validate_base(base))
+    return;
+
+base_len = ft_strlen(base);
+```
+
+---
+
+## ❌ **Mistake 6 — Not understanding why `j = i + 1`**
+
+Some students incorrectly do:
+
+```c
+j = 0;  // ❌ inefficient
+```
+
+Or:
+
+```c
+j = i;  // ❌ always compares with itself
+```
+
+**Correct logic:**
+You only want to compare with characters *after* the current character.
+
+---
+
+## ❌ **Mistake 7 — Forgetting that the base is a “digit alphabet”**
+
+Some confuse `base` with “numeric base”.
+
+**Correct concept:**
+`char *base` is a **mapping** from digit value → symbol.
+
+Example:
+
+```c
+base[10] = 'A'
+```
+
+in hex.
+
+---
+
+## ❌ **Mistake 8 — Confusing recursion with loops or thinking recursion copies the function**
+
+**Fix:**
+Understand that recursion:
+
+* does NOT copy the function
+* creates a new stack frame
+* pauses the caller until the callee returns
+
+Analogy:
+One book, many readers; each has their own notebook.
+
+---
+
