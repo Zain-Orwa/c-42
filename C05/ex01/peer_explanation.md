@@ -12,8 +12,6 @@ The **factorial** of a number `n` (written `n!`) is defined as:
 n! = n × (n - 1) × (n - 2) × … × 3 × 2 × 1
 
 ```
-
-```c
 ### Examples  
 | n | n! | Explanation |
 |---|----|-------------|
