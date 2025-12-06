@@ -2,26 +2,11 @@
 #include <stdio.h>
 
 int ft_fibonacci(int index){
-	int prev1;
-	int prev2;
-	int Fibon;
-
 	if (index < 0) return (-1);
 	if (index == 0) return (0);
 	if (index == 1) return (1);
 
-	prev1 = 0;
-	prev2 = 1;
-	Fibon = 0;
-	if (index >= 2)
-	{
-		Fibon = prev1 + prev2;
-		prev2 = prev1;
-		prev1 = Fibon;
-		ft_fibonacci(index - 1);	
-	}
-
-	return (Fibon);
+	return (ft_fibonacci(index - 1) + ft_fibonacci(index - 2));
 }
 
 int	main(void)
