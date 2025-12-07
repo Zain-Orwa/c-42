@@ -30,11 +30,11 @@ int ft_find_next_prime(int nb){
 
 int	main(void)
 {
-	printf("What is the next prime of -3? %d\n", ft_find_next_prime(-3));
-	printf("What is the next prime of 6? %d\n", ft_find_next_prime(6));
-	printf("What is the next prime of 13? %d\n", ft_find_next_prime(13));
-	printf("What is the next prime of 25? %d\n", ft_find_next_prime(25));
-	printf("What is the next prime of 84? %d\n", ft_find_next_prime(84));
+	printf("Next prime of -3 is: %d\n", ft_find_next_prime(-3));
+	printf("Next prime of 6  is: %d\n", ft_find_next_prime(6));
+	printf("Next prime of 13 is: %d\n", ft_find_next_prime(13));
+	printf("Next prime of 25 is: %d\n", ft_find_next_prime(25));
+	printf("Next prime of 84 is: %d\n", ft_find_next_prime(84));
 
 	return (0);
 }
