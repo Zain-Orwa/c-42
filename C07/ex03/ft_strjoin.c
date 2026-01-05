@@ -61,17 +61,13 @@ char	*ft_strjoin(int size, char **strs, char *sep){
 		/* copy current string */
 		j = 0;
 		while (strs[i][j] != '\0')
-		{
 			joined_str[pos++] = strs[i][j++];
-		}
 
 		/* copy seperator to the string */
-		if (i < size - 1)
-		{
 			j = 0;
-			while (sep[j])
+			while (sep[j] && i != size - 1)
 				joined_str[pos++] = sep[j++]; 
-		}
+
 		i++;
 	}
 	joined_str[pos] = '\0';
@@ -80,17 +76,17 @@ char	*ft_strjoin(int size, char **strs, char *sep){
 }
 
 int main(void){
-	char *result;
-	char *words[] = {
+	char *joined_str;
+	char *strs[] = {
 		"Hello", "42", "Network"
 	};
 
-	result = ft_strjoin(3, words, " | ");
-	if (!result)
+	joined_str = ft_strjoin(3, strs, " | ");
+	if (!joined_str)
 		return (1);
 
-	printf("%s\n", result);
-	free(result);
+	printf("%s\n", joined_str);
+	free(joined_str);
 
 	return (0);
 }	
