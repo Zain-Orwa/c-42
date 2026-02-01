@@ -1,9 +1,20 @@
 #include <unistd.h>
 
-void ft_putstr(char *str){
+int ft_strlen(char *str){
+	char *start;
+
+	start = str;
 	while (*str)
-		write(1, str++, 1);
+		str++;
+
+	return (str - start);
 }
+
+void ft_putstr(char *str){
+	write(1, str, ft_strlen(str));
+}
+
+
 
 int main(){
 	char *str = {"print a string!\n"};
