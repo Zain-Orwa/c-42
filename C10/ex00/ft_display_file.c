@@ -4,13 +4,13 @@
 
 #define BUFFER_SIZE 1024
 
-int ft_strlen(char *str){
-	int len;
+size_t ft_strlen(const char *str){
+	const char *start;
 
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
+	start = str;
+	while (*str)
+		str++;
+	return (size_t)(str - start);
 }
 
 void ft_putstr(char *str){
