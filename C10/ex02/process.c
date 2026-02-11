@@ -114,6 +114,7 @@ static void	read_file(t_tail *context, int fd, char *buffer, char *file_name)
 		context->exit_status = 1;
 		return;
 	}
+
 	if (context->bytes_to_read > 0)  // ADDED GUARD
 	{
 		print_tail_buffer(buffer, current_position,
