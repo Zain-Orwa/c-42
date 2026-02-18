@@ -27,58 +27,44 @@ rush(5,3)
 
 ---
 
-## 💡 What Rush01 tests
+## 💡 What Rush01 really checks
 
-Rush01 checks if you understood that:
+Rush01 is not a new algorithm.
 
-> The algorithm stays identical — only the characters change.
+> The engine is identical to Rush00.
+> Only the character mapping changes.
 
-If you rewrote the loops, you misunderstood the project.
-
----
-
-## 🧠 Core Idea — Coordinate Classification
-
-We do NOT draw lines.
-
-We analyze every coordinate:
-
-```
-(row, col)
-```
-
-And decide its **role**, then translate that role into a character.
+So if you rewrote loops or classification → you misunderstood the project.
 
 ---
 
-## 📐 Grid Mental Model
+## 📐 How we think about the rectangle
 
-We scan the rectangle cell-by-cell:
+We don’t draw lines.
+We scan coordinates.
+
+Each printed character corresponds to:
 
 ```
-(1,1) (1,2) (1,3) ... (1,x)
+(current_row, current_col)
+```
+
+Example grid:
+
+```
+(1,1) (1,2) (1,3) ... (1,width)
 (2,1) (2,2) (2,3) ...
 ...
-(y,1)       ... (y,x)
+(height,1) ... (height,width)
 ```
 
-Each cell belongs to a category.
+Every position must be classified.
 
 ---
 
-## 🏷 Cell Types
+## 🏷 Cell types
 
-| Type            | Meaning                  |
-| --------------- | ------------------------ |
-| TOP_LEFT        | first row + first column |
-| TOP_RIGHT       | first row + last column  |
-| BOTTOM_LEFT     | last row + first column  |
-| BOTTOM_RIGHT    | last row + last column   |
-| HORIZONTAL_EDGE | top or bottom row        |
-| VERTICAL_EDGE   | left or right column     |
-| INSIDE          | middle                   |
-
-We define constants:
+We defined constants:
 
 ```c
 #define CELL_TOP_LEFT         0
@@ -92,82 +78,84 @@ We define constants:
 
 ---
 
-## 🔑 Important Concept — Priority
+## 🔑 Important concept — Priority
 
-A corner is also an edge mathematically:
+A corner logically belongs to edges too.
 
 Example `(1,1)`:
 
-* horizontal ✔
-* vertical ✔
-* corner ✔
+* first row → horizontal edge
+* first column → vertical edge
+* also → corner
 
-But we force priority:
+But our program must choose ONE final meaning.
+
+So we enforce:
 
 ```
 Corner > Edge > Inside
 ```
 
-So `(1,1)` becomes only **corner**.
+Because `identify_cell_type` returns immediately once matched.
 
 ---
 
-## 🧠 identify_cell_type — Geometry Brain
+## 🧠 identify_cell_type — geometry logic
 
-This function decides the position meaning.
+This function decides **where we are**.
 
 ```c
-static int identify_cell_type(int row, int col, int width, int height)
+static int identify_cell_type(int current_row, int current_col, int width, int height)
 {
-	if (row == 1 && col == 1)
+	if (current_row == 1 && current_col == 1)
 		return (CELL_TOP_LEFT);
-	if (row == 1 && col == width)
+	if (current_row == 1 && current_col == width)
 		return (CELL_TOP_RIGHT);
-	if (row == height && col == 1)
+	if (current_row == height && current_col == 1)
 		return (CELL_BOTTOM_LEFT);
-	if (row == height && col == width)
+	if (current_row == height && current_col == width)
 		return (CELL_BOTTOM_RIGHT);
-	if (row == 1 || row == height)
+	if (current_row == 1 || current_row == height)
 		return (CELL_HORIZONTAL_EDGE);
-	if (col == 1 || col == width)
+	if (current_col == 1 || current_col == width)
 		return (CELL_VERTICAL_EDGE);
 	return (CELL_INSIDE);
 }
 ```
 
-### Why no `else if`?
+### Why we use simple `if`
 
-Each `if` returns immediately → no nesting needed → clearer.
+Each condition returns immediately → no nesting → clearer logic.
 
 ---
 
-## 🎨 get_cell_char — Rush01 Style Mapping
+## 🎨 get_cell_char — Rush01 mapping
 
-Now we translate meaning → symbol.
+Now we translate meaning → character.
 
-### Rush01 character set
+### Rush01 characters
 
-| Type            | Character |
-| --------------- | --------- |
-| TOP_LEFT        | `/`       |
-| TOP_RIGHT       | `\`       |
-| BOTTOM_LEFT     | `\`       |
-| BOTTOM_RIGHT    | `/`       |
-| HORIZONTAL_EDGE | `*`       |
-| VERTICAL_EDGE   | `*`       |
-| INSIDE          | space     |
+| Cell Type       | Output |
+| --------------- | ------ |
+| top-left        | `/`    |
+| top-right       | `\`    |
+| bottom-left     | `\`    |
+| bottom-right    | `/`    |
+| horizontal edge | `*`    |
+| vertical edge   | `*`    |
+| inside          | space  |
 
 ⚠ Important:
 Backslash in C must be escaped → `'\\'`
 
 ```c
-static char get_cell_char(int type)
+static char get_cell_char(int cell_type)
 {
-	if (type == CELL_TOP_LEFT || type == CELL_BOTTOM_RIGHT)
+	if (cell_type == CELL_TOP_LEFT || cell_type == CELL_BOTTOM_RIGHT)
 		return ('/');
-	if (type == CELL_TOP_RIGHT || type == CELL_BOTTOM_LEFT)
+	if (cell_type == CELL_TOP_RIGHT || cell_type == CELL_BOTTOM_LEFT)
 		return ('\\');
-	if (type == CELL_HORIZONTAL_EDGE || type == CELL_VERTICAL_EDGE)
+	if (cell_type == CELL_HORIZONTAL_EDGE || cell_type == CELL_VERTICAL_EDGE)
 		return ('*');
 	return (' ');
 }
@@ -175,64 +163,64 @@ static char get_cell_char(int type)
 
 ---
 
-## 🏗 rush — The Engine
+## 🏗 rush — the engine
 
 The traversal never changes.
 
 ```
-for each row
-    for each column
-        classify
-        translate
-        print
-    newline
+row loop outside
+column loop inside
+newline after each row
 ```
 
 ```c
 void rush(int x, int y)
 {
-	int row;
-	int col;
+	int current_row;
+	int current_col;
+	int cell_type;
+	char cell_char;
 
 	if (x <= 0 || y <= 0)
 		return;
 
-	row = 1;
-	while (row <= y)
+	current_row = 1;
+	while (current_row <= y)
 	{
-		col = 1;
-		while (col <= x)
+		current_col = 1;
+		while (current_col <= x)
 		{
-			ft_putchar(get_cell_char(
-				identify_cell_type(row, col, x, y)));
-			col++;
+			cell_type = identify_cell_type(current_row, current_col, x, y);
+			cell_char = get_cell_char(cell_type);
+			ft_putchar(cell_char);
+			current_col++;
 		}
 		ft_putchar('\n');
-		row++;
+		current_row++;
 	}
 }
 ```
 
 ---
 
-## 🔗 Function Prototypes
+## 🔗 Why we declare ft_putchar
 
 ```c
 void ft_putchar(char c);
 ```
 
-Needed because each `.c` file is compiled separately.
+Because each `.c` file is compiled separately.
 
-Compiler checks signature → linker connects files.
+The compiler must know the function signature before linking object files.
 
 ---
 
-## 📏 Output Size
+## 📏 Output size rule
 
-Characters printed:
+Total characters printed:
 
 ```
-(x * y) + y newlines
+(width × height) + height newlines
 ```
 
 Example:
@@ -243,36 +231,35 @@ Example:
 
 ---
 
-## 📘 Key Lessons
+## 📘 Key understanding
 
-### Separation of concerns
+### Separation of roles
 
-| Layer              | Role      |
-| ------------------ | --------- |
-| identify_cell_type | geometry  |
-| get_cell_char      | style     |
-| rush               | traversal |
-| ft_putchar         | IO        |
-
----
-
-### Priority classification
-
-Corners override edges.
+| Function           | Responsibility |
+| ------------------ | -------------- |
+| identify_cell_type | geometry       |
+| get_cell_char      | appearance     |
+| rush               | traversal      |
+| ft_putchar         | output         |
 
 ---
 
-### Same engine, different skin
+### Important realization
 
-Rush01 only changed characters — not logic.
+We did NOT rewrite the rectangle printer.
+
+We only changed the symbol mapping.
 
 ---
 
-## 🏁 Final Understanding
+## 🏁 Final conclusion
 
-Rush01 confirms the rectangle printer is actually:
+Rush01 proves:
 
-> A coordinate → semantic → character rendering system
+> The rush project is a coordinate → meaning → character renderer.
+
+All rushes share the same engine.
+Only the character set changes.
 
 ---
 
