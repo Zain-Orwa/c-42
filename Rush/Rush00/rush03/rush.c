@@ -25,17 +25,14 @@ static int	identify_cell_type(int current_row, int current_col, int width, int h
 	return (CELL_INSIDE);
 }
 
-static char	get_cell_char(int cell_type)
+char	get_cell_char(int cell_type)
 {
-	if (cell_type == CELL_TOP_LEFT
-		|| cell_type == CELL_TOP_RIGHT
-		|| cell_type == CELL_BOTTOM_LEFT
-		|| cell_type == CELL_BOTTOM_RIGHT)
-		return ('o');
-	if (cell_type == CELL_HORIZONTAL_EDGE)
-		return ('-');
-	if (cell_type == CELL_VERTICAL_EDGE)
-		return ('|');
+	if (cell_type == CELL_TOP_LEFT || cell_type == CELL_BOTTOM_LEFT)
+		return ('A');
+	if (cell_type == CELL_TOP_RIGHT || cell_type == CELL_BOTTOM_RIGHT)
+		return ('C');
+	if (cell_type == CELL_HORIZONTAL_EDGE || cell_type == CELL_VERTICAL_EDGE)
+		return ('B');
 	return (' ');
 }
 
