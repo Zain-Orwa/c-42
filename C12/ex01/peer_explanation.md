@@ -1,6 +1,3 @@
-Perfect.
-Here is your **`peer_explanation.md`** for:
-
 # 📚 C12 – Chapter IV
 
 # 🧩 Exercise 01 – `ft_list_push_front`
@@ -591,4 +588,197 @@ It only stores what you give it.
 
 ---
 
+You are comparing:
+
+1️⃣ `insert_at_head(Node *head, int new_value)`
+2️⃣ `ft_list_push_front(t_list **begin_list, void *data)`
+
+Let’s compare them logically, not syntactically.
+
+---
+
+# 🔹 1️⃣ How They Modify the Head
+
+### insert_at_head
+
+```c
+Node *insert_at_head(Node *head, int new_value);
+```
+
+* Receives a copy of the head pointer
+* Returns the new head
+* Caller must reassign:
+
+```c
+head = insert_at_head(head, 7);
+```
+
+So modification happens via **return value**.
+
+---
+
+### ft_list_push_front
+
+```c
+void ft_list_push_front(t_list **begin_list, void *data);
+```
+
+* Receives address of head
+* Directly modifies original head
+* No return needed
+
+Modification happens via **double pointer**.
+
+---
+
+# 🔹 2️⃣ Logical Operation (Are They Doing the Same Thing?)
+
+Yes.
+
+Both do:
+
+```text
+new->next = old_head
+head = new
+```
+
+So algorithmically:
+
+They are identical in behavior.
+
+Both are O(1).
+
+---
+
+# 🔹 3️⃣ Memory Behavior
+
+### insert_at_head
+
+```
+STACK:
+head → 0x1000
+
+Function receives:
+copy of head
+```
+
+Returns new pointer.
+
+---
+
+### push_front
+
+```
+STACK:
+head → 0x1000
+&
+│
+▼
+address of head
+```
+
+Function modifies it directly.
+
+---
+
+# 🔹 4️⃣ Data Type Flexibility
+
+### insert_at_head
+
+```c
+int value;
+```
+
+* Stores only integers
+* Not generic
+
+---
+
+### push_front
+
+```c
+void *data;
+```
+
+* Can store anything
+* Generic
+* More powerful
+
+---
+
+# 🔹 5️⃣ Design Philosophy
+
+| insert_at_head       | push_front                |
+| -------------------- | ------------------------- |
+| Simpler conceptually | More “C pointer advanced” |
+| Uses return pattern  | Uses double pointer       |
+| Fixed int list       | Generic list              |
+| Good for learning    | Used in real 42 projects  |
+
+---
+
+# 🔹 6️⃣ Which Is Better?
+
+Depends on purpose:
+
+### For learning basics:
+
+`insert_at_head` is cleaner and easier to understand.
+
+### For real reusable library:
+
+`ft_list_push_front` is better because:
+
+* Generic
+* No need to reassign head outside
+* Cleaner API for list manipulation
+
+---
+
+# 🔥 Final Core Difference
+
+The real difference is NOT insertion logic.
+
+The real difference is:
+
+```text
+Return-new-head style  vs  Modify-head-by-address style
+```
+
+And:
+
+```text
+Specific data type  vs  Generic data type
+```
+
+---
+
+# 🧠 One Sentence Summary
+
+Both insert at the front the same way —
+the only difference is how they update the head and how flexible the stored data is.
+
+---
+
+If you want to **modify the original head pointer**,
+you must receive its **address**, so the parameter must be:
+
+```c
+t_list **begin_list
+```
+
+Because:
+
+* `t_list *` → copy of head (cannot change original)
+* `t_list **` → address of head (can change original)
+
+So:
+
+```c
+ft_list_push_front(&head, data);
+```
+
+`&head` → type is `t_list **`
+
+That’s why the function needs two `*`.
 
